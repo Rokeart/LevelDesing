@@ -1,14 +1,22 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class KeyCodeList : MonoBehaviour
 {
-    //public List<KEY_CODE> = new List
+    public List<KEY_CODE> KeyCodes = new List<KEY_CODE>();
+
+    public void AddKey(KEY_CODE key)
+    {
+       
+            KeyCodes.Add(key);
+        
+    }
 }
-public enum Key_Code
+public enum KEY_CODE
 {
-    BlueKey,
-    GreenKey,
-    RedKey,
-    YellowKey,
+    BlueDoor,
+    GreenDoor,
+    RedDoor,
+    YellowDoor,
 }
 
