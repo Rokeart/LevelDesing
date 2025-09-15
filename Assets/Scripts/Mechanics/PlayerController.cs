@@ -31,6 +31,7 @@ namespace Platformer.Mechanics
         readonly PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
         public Bounds Bounds => collider2d.bounds;
+        Vector2 externalmove = Vector2.zero;
 
         // --- Doble salto ---
         public int maxJumpCount = 2;
@@ -133,7 +134,8 @@ namespace Platformer.Mechanics
             animator.SetBool("grounded", IsGrounded);
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
 
-            targetVelocity = move * maxSpeed;
+            targetVelocity = (move * maxSpeed) + externalmove;
+            
         }
 
         public enum JumpState
@@ -144,5 +146,12 @@ namespace Platformer.Mechanics
             InFlight,
             Landed
         }
+
+        public void Move (Vector2 direction)
+        {
+            externalmove = direction;
+        }
+
     }
+
 }

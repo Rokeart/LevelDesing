@@ -9,7 +9,7 @@ public class Spring : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         { 
-            Debug.Log("colisiono con el player");
+          
             PlayerController rb = other.gameObject.GetComponent<PlayerController>();
             if (rb != null)
             {
