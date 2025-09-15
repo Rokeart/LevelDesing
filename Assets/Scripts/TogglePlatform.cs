@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 public class TogglePlatform : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class TogglePlatform : MonoBehaviour
 
     private Transform target;   // hacia dónde se mueve
     private bool isMoving = false;
+
+    public bool IsMoving => isMoving;
+
+    public Action OnPlatformStopped;
 
     private void Start()
     {
@@ -27,18 +32,28 @@ public class TogglePlatform : MonoBehaviour
             speed * Time.deltaTime
         );
 
+               
         // si llegó al destino, detener movimiento
-        if (Vector3.Distance(transform.position, target.position) < 0.001f)
+        if (Vector3.Distance(transform.position, target.position) < 0.1f)
         {
             transform.position = target.position; // ajustar exacto
             isMoving = false;
+            OnPlatformStopped?.Invoke();
         }
     }
 
     public void ToggleMove()
     {
-        // invertir el destino
-        target = (target == pointA) ? pointB : pointA;
-        isMoving = true;
+        // Si no se está moviendo, cambiar el destino
+        if (!isMoving)
+        {
+            // Si está prácticamente en A, mover a B
+            if (Vector3.Distance(transform.position, pointA.position) < 0.05f)
+                target = pointB;
+            else
+                target = pointA;
+
+            isMoving = true;
+        }
     }
 }
