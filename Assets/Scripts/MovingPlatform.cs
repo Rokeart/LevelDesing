@@ -1,7 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
+    public enum MoveDirection { Horizontal, Vertical } // 👉 opciones
+    public MoveDirection direction = MoveDirection.Horizontal;
+
     public float amplitude = 3f;
     public float speed = 2f;
 
@@ -14,19 +17,24 @@ public class MovingPlatform : MonoBehaviour
     {
         startPos = transform.position;
         rb = GetComponent<Rigidbody2D>();
-        rb.isKinematic = true; // platform controlled by script
+        rb.isKinematic = true;
         lastPos = startPos;
     }
 
     void FixedUpdate()
     {
-        float x = Mathf.Sin(Time.time * speed) * amplitude;
-        Vector3 newPos = startPos + new Vector3(x, 0f, 0f);
+        float offset = Mathf.Sin(Time.time * speed) * amplitude;
+        Vector3 newPos = startPos;
 
-        // Move with physics
+        // 👉 Cambiamos el eje según lo que elegiste en el Inspector
+        if (direction == MoveDirection.Horizontal)
+            newPos += new Vector3(offset, 0f, 0f);
+        else
+            newPos += new Vector3(0f, offset, 0f);
+
         rb.MovePosition(newPos);
 
-        // Calculate velocity
+        // calcular velocidad de la plataforma
         velocity = (newPos - lastPos) / Time.fixedDeltaTime;
         lastPos = newPos;
     }
@@ -38,12 +46,16 @@ public class MovingPlatform : MonoBehaviour
             Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
             if (playerRb != null)
             {
-                // Add platform velocity to the player
                 Vector2 playerVel = playerRb.linearVelocity;
-                playerRb.linearVelocity = new Vector2(velocity.x, playerVel.y);
+
+                if (direction == MoveDirection.Horizontal)
+                    playerRb.linearVelocity = new Vector2(velocity.x, playerVel.y);
+                else // Vertical
+                    playerRb.linearVelocity = new Vector2(playerVel.x, velocity.y);
             }
         }
     }
+
     void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -51,9 +63,12 @@ public class MovingPlatform : MonoBehaviour
             Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
             if (playerRb != null)
             {
-                // Add platform velocity to the player
                 Vector2 playerVel = playerRb.linearVelocity;
-                playerRb.linearVelocity = new Vector2(0, playerVel.y);
+
+                if (direction == MoveDirection.Horizontal)
+                    playerRb.linearVelocity = new Vector2(0, playerVel.y);
+                else
+                    playerRb.linearVelocity = new Vector2(playerVel.x, 0);
             }
         }
     }
