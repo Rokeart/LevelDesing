@@ -6,6 +6,9 @@ namespace Platformer.Mechanics
     {
         public SimpleToken[] tokens;
 
+        [Tooltip("Cantidad total inicial de tokens, aunque algunos estén inactivos al inicio.")]
+        public int initialTotalTokens = 14;
+
         public int totalTokens { get; private set; }
         public int collectedTokens { get; private set; }
 
@@ -20,14 +23,16 @@ namespace Platformer.Mechanics
                     token.controller = this;
             }
 
-            totalTokens = tokens.Length;
+            // Establecemos el total de tokens desde el valor fijo
+            totalTokens = initialTotalTokens;
             collectedTokens = 0;
         }
 
         public void RegisterTokenCollected()
         {
             collectedTokens++;
-            
+
+           
         }
     }
 }
